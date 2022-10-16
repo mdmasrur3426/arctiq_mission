@@ -1,0 +1,12 @@
+{
+    "type": "service_account",
+    "project_id": "arctiq-mission-masrur",
+    "private_key_id": "07dbb66585d56e2b18144a2218e31a32ebfd9262",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCuqSXHXYW8WUwP\n/PD4OZNkB4tm25zhJM9bxHvO/bNMRVYNzYK3gt6sEr+rXMoUt5RWKo3xXMJES0mF\nMT/InhbRlg1ggQEXdVvvTMY+lW9BiGhQE57mtNVZseTM1Jf7TYP5Z8ff5r1k0NQM\n4GOIaE0uB3f96p6Qqd7pKgg2yQ+aaUHeQGNZInbBiKHNOtcM1LuL322gqYxnUMqk\nvt7QdA4MedvIF+OeAeUwbImU8KVvJpThgQK85u6iKsD88zcFO1a7MAvaFKZkVdls\nfI1amx4nd7Rn3eHNL+gIjshQ0GORiBIjI9XjwoWqSnnFwztKhdhNx3hMYJuIL6P4\nj/pO0Y4jAgMBAAECggEAA+Tki+czZJ7PDyoyCy6+xlj+ttUy+w1m4Xe7f5gbcm9h\n+vPNNB84V2N29NtK7B79sSrIuGFmOWno9+MVtiOELw8ROZ4WsqRctN9O1OALDM3S\n7uTJGFa0Il2mKW+cpdngFTmcSgsrHNTPwtZmkbOASQREnMYphosrBk14Gmntgvad\nXmQIO+AI3zX/U7A41GKMpuUeWUO9JN8CAFbkzXCuh6f0KnZzQSFG9uI06EFuudU7\nsg6fhKx0Q5UqxtWzQODdplbneC7NlYW6ie4/+XedZvBBwpBes8J3yGLTn0oE8O22\nHJ3QrD7mv++1dH0Uv0t8PxlKCh2Mipd5nakRqRDbGQKBgQDfWT9zRtjmFHwoxdEC\nFdHhHYYLqqUAqOxv/5VlLjMtv7FfPU6HB2jsjdeF3n41DHC4ZxGEuAAns3NsCquZ\n5gUip/cXHryNI60WXov1ZATyEDifRHv6Zpo2Lu+7wL2zgNgKx14VjLFkL4qiZ7yj\n+n6bgm2Ini52OS+5movb554fGwKBgQDIMcVJ6HvVi8EDJMBSAvIz2jn6jbpOJAqO\nU9P7DMd+zImtq/8NaXK7OkcHE8yzYhq256XKtLFZ67/w/joMn+CGRHlgWWqnDRhL\n+fl8tdzjqhi8oks6GlALWIHRaWMJQJujyTp5HBGvtsNzs249iwffZY1r6mu7DYeL\nU0vdycdVmQKBgERs5UF93QlwETG0mPnYkXo0P1LnrrFrDzSoyq463zcO2VpiP+Ki\nZITEV9kNdwDtlMMJ4JYWgQWotp3NDxGRJNWfO9X7dqyO14JY6Ov+/nzid1Zj9s+a\nC3i6HHwa6oNJ3+Y9eheECPy2i/SBb4uVPKCL7t7CB1302ygzrtFqPkktAoGBAKWs\narULbNAA5C6Rz4cPYRmAU9MCT1gzg3jd7uQoY0CQTLApUt3qkkRXqkg1Hoalfa44\nboAeoVblPudVvPyNouX67OfLl/O/ZogZy1pltvPB5M7XEKJ4/B0nleeT653Qlf0p\nnvZzQD/GZGHv8B+GW3GJPUw9qAIY5D9tI6/cONahAoGBAMlDqKSQ3IeS1GhauhaL\nwqO1EDFw9sgTNdL3GyHy7Q2Qc78HLNamfKLVzSu6BENVul7cDtjcMw8l3+T1mTEG\nOxK1KXGNDsuFFQpYrJiS0XiOxhr8TiFu3o3bSwg7DQZTVXCb6gC72VN/dyv/nZY0\n9GI7oHEERVjjiSJplJqhkJMh\n-----END PRIVATE KEY-----\n",
+    "client_email": "arctiq-gitlab@arctiq-mission-masrur.iam.gserviceaccount.com",
+    "client_id": "117592395442843202569",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/arctiq-gitlab%40arctiq-mission-masrur.iam.gserviceaccount.com"
+  }

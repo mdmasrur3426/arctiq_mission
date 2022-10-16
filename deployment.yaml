@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: gitlab-gke-cicd
+ name: arctiq_mission
  labels:
    app: python
 spec:
@@ -16,7 +16,7 @@ spec:
    spec:
      containers:
        - name: python-hello-world
-         image: gcr.io/arctiq-mission-masrur/gitlab-gke-cicd:<VERSION>
+         image: gcr.io/arctiq-mission-masrur/arctiq_mission:<VERSION>
          imagePullPolicy: Always
          ports:
            - containerPort: 8080

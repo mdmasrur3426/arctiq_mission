@@ -1,0 +1,14 @@
+**/.terraform/*
+
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+**/inspec.lock
+**.gem
+**/.kitchen
+**/.kitchen.local.yml
+**/Gemfile.lock
+credentials.json
+
+

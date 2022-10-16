@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
- name: arctiq_mission
+ name: arctiq-mission
  labels:
    app: python
 spec:

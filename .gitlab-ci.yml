@@ -31,7 +31,7 @@ deploy:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project arctiq-mission-masrur
    - gcloud config set container/cluster primary
-   - gcloud config set compute/zone asia-south1-c
-   - gcloud container clusters get-credentials primary --zone asia-south1-c --project arctiq-mission-masrur
+   - gcloud config set compute/zone us-central1-a
+   - gcloud container clusters get-credentials primary --zone us-central1-a --project arctiq-mission-masrur
    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
    - kubectl apply -f deployment.yaml

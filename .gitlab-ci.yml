@@ -18,8 +18,9 @@ pytest:
   image: python:3.8.0-slim
   stage: test
   before_script:
-    - pip install pytest-html
-    - pip install -r requirements.txt
+    - pip3 install pytest
+    - pip3 install pytest-html
+    - pip3 install -r requirements.txt
   script:
     - pytest --html=pytest_reports/pytest-report.html --self-contained-html
   artifacts:

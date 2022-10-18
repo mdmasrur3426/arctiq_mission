@@ -60,6 +60,6 @@ deploy_stage:
    - gcloud config set container/cluster $GKE_CLUSTER_NAME
    - gcloud config set compute/zone us-central1-a
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone asia-south1-c --project $GCP_PROJECT_NAME
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCP_PROJECT_NAME
     - sed -i "s/<IMAGE_TAG>/$IMAGE_TAG/g" deployment.yaml
     - kubectl apply -f deployment.yaml 

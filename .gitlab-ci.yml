@@ -1,5 +1,11 @@
 stages:
   - test
+  - build
+
+variables:
+  REGISTRY_HOSTNAME: gcr.io/arctiq-mission-masrur
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
+
 
 lint_test:
   image: python:3.8.0-slim
@@ -14,15 +20,29 @@ lint_test:
     paths:
       - flake8_reports/
 
-pytest:
-  image: python:3.8.0-slim
-  stage: test
+# pytest:
+#   image: python:3.8.0-slim
+#   stage: test
+#   before_script:
+#     - pip install pytest-html
+#     - pip install -r requirements.txt
+#   script:
+#     - pytest --html=pytest_reports/pytest-report.html --self-contained-html
+#   artifacts:
+#     when: always
+#     paths:
+#       - pytest_reports/
+
+build:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
   before_script:
-    - pip install pytest-html
-    - pip install -r requirements.txt
+    - docker info
+    - echo "$SERVICE_ACCOUNT_KEY" > key.json
+    - docker login -u _json_key --password-stdin https://gcr.io < key.json
   script:
-    - pytest --html=pytest_reports/pytest-report.html --self-contained-html
-  artifacts:
-    when: always
-    paths:
-      - pytest_reports/
+    - docker build -t $IMAGE_TAG .
+    - docker images
+    - docker push $IMAGE_TAG

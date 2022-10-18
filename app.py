@@ -10,9 +10,7 @@ db = models.db
 db.init_app(app)
 db.app = app
 
-def init_db():
-    db.create_all()
-    
+
 # the application's main/index page
 @app.route('/')
 def index():

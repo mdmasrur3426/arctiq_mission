@@ -4,10 +4,9 @@ stages:
   - deploy staging
 
 variables:
-  GCLOUD_PROJECT: arctiq-mission-masrur
-  REPO_NAME: arctiq-mission
-  LOCATION: us-central1
-  IMAGE_TAG: $LOCATION-docker.pkg.dev/$GCLOUD_PROJECT/$REPO_NAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_SHORT_SHA
+  GCP_PROJECT_NAME: arctiq-mission-masrur
+  REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
   GKE_CLUSTER_NAME: primary
 
 
@@ -45,15 +44,11 @@ build:
   before_script:
     - docker info
     - echo "$SERVICE_ACCOUNT_KEY" > key.json
-    - curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.6/docker-credential-gcr_linux_amd64-2.1.6.tar.gz" | 
-      tar xz docker-credential-gcr  && chmod +x docker-credential-gcr && sudo mv docker-credential-gcr /usr/bin/
-    - docker-credential-gcr configure-docker --registries=us-central1-docker.pkg.dev
-    # - docker login -u _json_key --password-stdin https://gcr.io < key.json
+    - docker login -u _json_key --password-stdin https://gcr.io < key.json
   script:
     - docker build -t $IMAGE_TAG .
     - docker images
     - docker push $IMAGE_TAG
-
 
 deploy_stage:
   image: google/cloud-sdk
@@ -61,10 +56,10 @@ deploy_stage:
   before_script:
    - echo "$SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json
-   - gcloud config set project $GCLOUD_PROJECT
+   - gcloud config set project $GCP_PROJECT_NAME
    - gcloud config set container/cluster $GKE_CLUSTER_NAME
    - gcloud config set compute/zone us-central1-a
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCLOUD_PROJECT
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCP_PROJECT_NAME
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
     - kubectl apply -f deployment.yaml 

@@ -45,11 +45,15 @@ build:
   before_script:
     - docker info
     - echo "$SERVICE_ACCOUNT_KEY" > key.json
-    - docker login -u _json_key --password-stdin https://gcr.io < key.json
+    - curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${VERSION}/docker-credential-gcr_${OS}_${ARCH}-${VERSION}.tar.gz" | 
+      tar xz docker-credential-gcr  && chmod +x docker-credential-gcr && sudo mv docker-credential-gcr /usr/bin/
+    - docker-credential-gcr configure-docker --registries=us-central1-docker.pkg.dev
+    # - docker login -u _json_key --password-stdin https://gcr.io < key.json
   script:
     - docker build -t $IMAGE_TAG .
     - docker images
     - docker push $IMAGE_TAG
+
 
 deploy_stage:
   image: google/cloud-sdk

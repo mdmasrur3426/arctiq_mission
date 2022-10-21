@@ -11,7 +11,7 @@ variables:
 
 
 lint_test:
-  image: python:3.8.0-slim
+  image: python:3.7.0-slim
   stage: test
   before_script:
     - pip3 install flake8==4.0.1
@@ -24,7 +24,7 @@ lint_test:
       - flake8_reports/
 
 # pytest:
-#   image: python:3.8.0-slim
+#   image: python:3.7.0-slim
 #   stage: test
 #   before_script:
 #     - pip install pytest-html

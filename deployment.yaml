@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: python-flask-app
-        image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:v1
+        image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:<VERSION>
         ports:
         - containerPort: 8080
         env:

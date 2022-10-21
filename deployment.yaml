@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: python-flask-app
-        image: us-central1-docker.pkg.dev/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:<VERSION>
+        image: us-central1-docker.pkg.dev/arctiq-mission-masrur/arctiq-mission/arctiq_mission/arctiq-image:<VERSION>
         ports:
         - containerPort: 8080
         env:

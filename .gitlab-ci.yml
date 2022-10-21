@@ -5,8 +5,9 @@ stages:
 
 variables:
   GCLOUD_PROJECT: arctiq-mission-masrur
+  REPO_NAME: arctiq-mission
   LOCATION: us-central1
-  IMAGE_TAG: $LOCATION-docker.pkg.dev/$GCLOUD_PROJECT/$CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
+  IMAGE_TAG: $LOCATION-docker.pkg.dev/$GCLOUD_PROJECT/$REPO_NAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_SHORT_SHA
   GKE_CLUSTER_NAME: primary
 
 

@@ -17,7 +17,7 @@ lint_test:
     - pip3 install flake8==4.0.1
     - pip3 install flake8-html==0.4.1 Jinja2==3.0
   script:
-    - flake8 --format=html --htmldir=flake8_reports/
+    - flake8 app.py --dir=flake8_reports/
   artifacts:
     when: always
     paths:

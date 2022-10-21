@@ -4,9 +4,9 @@ stages:
   - deploy staging
 
 variables:
-  GCP_PROJECT_NAME: arctiq-mission-masrur
-  REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
-  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
+  GCLOUD_PROJECT: arctiq-mission-masrur
+  LOCATION: us-central1
+  IMAGE_TAG: $LOCATION-docker.pkg.dev/$GCLOUD_PROJECT/ $CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
   GKE_CLUSTER_NAME: primary
 
 
@@ -56,10 +56,10 @@ deploy_stage:
   before_script:
    - echo "$SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json
-   - gcloud config set project $GCP_PROJECT_NAME
+   - gcloud config set project $GCLOUD_PROJECT
    - gcloud config set container/cluster $GKE_CLUSTER_NAME
    - gcloud config set compute/zone us-central1-a
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCP_PROJECT_NAME
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCLOUD_PROJECT
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
     - kubectl apply -f deployment.yaml 

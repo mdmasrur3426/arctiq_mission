@@ -2,18 +2,19 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: arctiq-mission-cicd
+  namespace: arctiq-mission
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: python
+      app: python-flask
   template:
     metadata:
       labels:
-        app: python
+        app: python-flask
     spec:
       containers:
-      - name: python-flask
+      - name: python-flask-app
         image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:<VERSION>
         ports:
         - containerPort: 8080
@@ -24,11 +25,12 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: python-service
+  name: python-flask
+  namespace: arctiq-mission
 spec:
   type: LoadBalancer
   selector:
-    app: python
+    app: python-flask
   ports:
   - port: 80
     targetPort: 8080

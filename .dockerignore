@@ -2,3 +2,10 @@
 arctiq-gke
 arctiq-gke/*
 .gitignore
+nginx-values.yaml
+Dockerfile
+README.md
+*.pyc
+*.pyo
+*.pyd
+__pycache__

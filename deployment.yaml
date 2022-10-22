@@ -1,7 +1,10 @@
 apiVersion: v1
-kind: Namespace
+kind: Pod
 metadata:
-  name: arctiq-mission
+  name: arctiq-pod
+  namespace: arctiq-mission
+spec:
+  serviceAccountName: arctiq-gke
 ---
 apiVersion: apps/v1
 kind: Deployment

@@ -23,7 +23,9 @@ resource "google_container_node_pool" "general" {
     service_account = google_service_account.kubernetes.email
     oauth_scopes = [
         "https://www.googleapis.com/auth/cloud-platform",
-        "https://www.googleapis.com/auth/devstorage.read_only"
+        "https://www.googleapis.com/auth/devstorage.read_only",
+        "https://www.googleapis.com/auth/servicecontrol",
+        "https://www.googleapis.com/auth/service.management.readonly"
     ]
   }
 }

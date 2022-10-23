@@ -5,9 +5,10 @@ stages:
 
 variables:
   GCP_PROJECT_NAME: arctiq-mission-masrur
-  # $GKE_NAMESPACE: arctiq-mission
-  IMAGE_TAG: $CI_REGISTRY_IMAGE/arctiq-image:$CI_COMMIT_REF_SLUG
-  # GKE_CLUSTER_NAME: primary
+  $GKE_NAMESPACE: arctiq-mission
+  REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/$CI_PROJECT_NAMESPACE/arctiq-image:$CI_COMMIT_SHORT_SHA
+  GKE_CLUSTER_NAME: primary
 
 
 lint_test:
@@ -42,23 +43,24 @@ build:
     - docker:dind
   stage: build
   before_script:
-    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker info
+    - echo "$SERVICE_ACCOUNT_KEY" > key.json
+    - docker login -u _json_key --password-stdin https://gcr.io < key.json
   script:
     - docker build -t $IMAGE_TAG .
     - docker images
     - docker push $IMAGE_TAG
 
-# deploy_stage:
-#   image: google/cloud-sdk
-#   stage: deploy staging
-#   before_script:
-#    - echo "$SERVICE_ACCOUNT_KEY" > key.json
-#    - gcloud auth activate-service-account --key-file=key.json
-#    - gcloud config set project $GCP_PROJECT_NAME
-#    - gcloud config set container/cluster $GKE_CLUSTER_NAME
-#    - gcloud config set compute/zone us-central1-a
-#   script:
-#     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCP_PROJECT_NAME
-#     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
-#     - kubectl create secret generic service-account-credentials --from-file=key.json=/secrets/credentials.json
-#     - kubectl apply -f deployment.yaml 
+deploy_stage:
+  image: google/cloud-sdk
+  stage: deploy staging
+  before_script:
+   - echo "$SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME
+   - gcloud config set compute/zone us-central1-a
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME --zone us-central1-a --project $GCP_PROJECT_NAME
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
+    - kubectl apply -f deployment.yaml 

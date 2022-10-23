@@ -71,8 +71,6 @@ deploy_stage:
     - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
     - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
-  only:
-    - staging
 
 test_stage:
   image: google/cloud-sdk

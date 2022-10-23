@@ -11,7 +11,7 @@ variables:
   # PROD_NAMESPACE: arctiq-mission-prod
   STAGING_NAMESPACE: arctiq-mission-staging
   REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
-  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_SHORT_SHA
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_REF_SLUG
   GKE_CLUSTER_NAME_STAGING: staging
   # GKE_CLUSTER_NAME_PROD: production
 
@@ -67,7 +67,7 @@ deploy_stage:
    - gcloud config set compute/zone us-central1-a
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
-    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
     - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
 

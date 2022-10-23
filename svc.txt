@@ -1,0 +1,2 @@
+NAME                   TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)        AGE
+python-flask-service   LoadBalancer   10.52.14.209   35.238.95.235   80:31420/TCP   3m48s

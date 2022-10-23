@@ -1,10 +1,12 @@
 # comment
+Dockerfile
 arctiq-gke
 arctiq-gke/*
 .gitignore
 nginx-values.yaml
 Dockerfile
 README.md
+deployment.yaml
 *.pyc
 *.pyo
 *.pyd

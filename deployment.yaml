@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: python-flask-app
-        image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:26828954
+        image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:<VERSION>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080

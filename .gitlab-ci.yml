@@ -5,7 +5,7 @@ stages:
 
 variables:
   GCP_PROJECT_NAME: arctiq-mission-masrur
-  $GKE_NAMESPACE: arctiq-mission
+  # $GKE_NAMESPACE: arctiq-mission
   IMAGE_TAG: $CI_REGISTRY_IMAGE/arctiq-image:$CI_COMMIT_REF_SLUG
   GKE_CLUSTER_NAME: primary
 

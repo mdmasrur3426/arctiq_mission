@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: arctiq-mission
+  name: <ENVIRONMENT>
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: arctiq-mission-cicd
-  namespace: arctiq-mission
+  name: <ENVIRONMENT>-cicd
+  namespace: <ENVIRONMENT>
 spec:
   replicas: 1
   selector:
@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: python-flask-app
-        image: gcr.io/arctiq-mission-masrur/arctiq_mission/mdmasrur3426/arctiq-image:<VERSION>
+        image: gcr.io/arctiq-mission-masrur/arctiq_mission/arctiq-image:<VERSION>
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -32,7 +32,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: python-flask-service
-  namespace: arctiq-mission
+  namespace: <ENVIRONMENT>
   labels:
     app: python-flask
 spec:

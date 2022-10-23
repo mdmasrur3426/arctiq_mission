@@ -24,6 +24,9 @@ spec:
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
+        env:
+          - name: PORT
+            value: "8080"
         readinessProbe:
            httpGet:
              path: /

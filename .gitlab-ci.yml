@@ -68,7 +68,7 @@ deploy_stage:
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
-    - sed -i "s/<ENVIRONMENT>/${PROD_NAMESPACE}/g" deployment.yaml
+    - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
 
 # test_stage:

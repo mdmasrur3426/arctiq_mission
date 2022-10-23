@@ -1,5 +1,5 @@
-resource "google_container_cluster" "primary" {
-  name                     = "primary"
+resource "google_container_cluster" "production" {
+  name                     = "production"
   location                 = "us-central1-a"
   remove_default_node_pool = true
   initial_node_count        =   1
@@ -27,7 +27,7 @@ resource "google_container_cluster" "primary" {
   }
 
   workload_identity_config {
-    workload_pool = "arctiq-mission-masrur.svc.id.goog"
+    workload_pool = "arctiq-mission-prod-3368.svc.id.goog"
   }
 
   ip_allocation_policy {

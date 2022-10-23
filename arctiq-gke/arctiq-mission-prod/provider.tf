@@ -1,11 +1,11 @@
 provider "google" {
-    project = "arctiq-mission-masrur"
+    project = "arctiq-mission-prod-3368"
     region  = "us-central1"
 }
 
 terraform {
   backend "gcs" {
-    bucket = "arctiq-mission-tf-state-staging"
+    bucket = "arctiq-mission-tfstate-prod"
     prefix = "terraform/state"
   }
   required_providers {

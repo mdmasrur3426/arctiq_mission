@@ -1,5 +1,21 @@
 stages:
   - test
+  - build
+  - deploy staging
+  - automated testing
+  - deploy production
+
+variables:
+  GCP_PROJECT_NAME: arctiq-mission-masrur
+  GCP_PROJECT_NAME_STAGING: arctiq-mission-staging-72622
+  GCP_PROJECT_NAME_PROD: arctiq-mission-prod-3368
+  PROD_NAMESPACE: arctiq-mission-prod
+  STAGING_NAMESPACE: arctiq-mission-staging
+  REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_REF_SLUG
+  GKE_CLUSTER_NAME_STAGING: staging
+  GKE_CLUSTER_NAME_PROD: production
+
 
 lint_test:
   image: python:3.8.0-slim
@@ -8,8 +24,80 @@ lint_test:
     - pip3 install flake8==4.0.1
     - pip3 install flake8-html==0.4.1 Jinja2==3.0
   script:
-    - flake8 --format=html --htmldir=flake_reports/
+    - flake8 --format=html --htmldir=flake8_reports/
   artifacts:
     when: always
     paths:
-      - flake_reports/
+      - flake8_reports/
+
+# pytest:
+#   image: python:3.8.0-slim
+#   stage: test
+#   before_script:
+#     - pip install pytest-html
+#     - pip install -r requirements.txt
+#   script:
+#     - pytest --html=pytest_reports/pytest-report.html --self-contained-html
+#   artifacts:
+#     when: always
+#     paths:
+#       - pytest_reports/
+
+build:
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  before_script:
+    - docker info
+    - echo "$SERVICE_ACCOUNT_KEY" > key.json
+    - docker login -u _json_key --password-stdin https://gcr.io < key.json
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker images
+    - docker push $IMAGE_TAG
+
+deploy_stage:
+  image: google/cloud-sdk
+  stage: deploy staging
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
+    - kubectl apply -f deployment.yaml
+
+test_stage:
+  image: google/cloud-sdk
+  stage: automated testing
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+  script:
+   - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
+
+deploy_production:
+  image: google/cloud-sdk
+  stage: deploy production
+  before_script:
+   - echo "$PROD_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_PROD
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_PROD
+   - gcloud config set compute/zone us-central1-a
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD
+    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - sed -i "s/<ENVIRONMENT>/${PROD_NAMESPACE}/g" deployment.yaml
+    - kubectl apply -f deployment.yaml
+  only:
+    - main

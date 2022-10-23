@@ -74,7 +74,7 @@ deploy_stage:
 
 test_stage:
   image: google/cloud-sdk
-  stage: deploy staging
+  stage: automated testing
   before_script:
    - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json

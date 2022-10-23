@@ -3,17 +3,18 @@ stages:
   - build
   - deploy staging
   - automated testing
+  - deploy production
 
 variables:
   GCP_PROJECT_NAME: arctiq-mission-masrur
   GCP_PROJECT_NAME_STAGING: arctiq-mission-staging-72622
-  # GCP_PROJECT_NAME_PROD: arctiq-mission-prod-3368
-  # PROD_NAMESPACE: arctiq-mission-prod
+  GCP_PROJECT_NAME_PROD: arctiq-mission-prod-3368
+  PROD_NAMESPACE: arctiq-mission-prod
   STAGING_NAMESPACE: arctiq-mission-staging
   REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
   IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_REF_SLUG
   GKE_CLUSTER_NAME_STAGING: staging
-  # GKE_CLUSTER_NAME_PROD: production
+  GKE_CLUSTER_NAME_PROD: production
 
 
 lint_test:
@@ -70,8 +71,34 @@ deploy_stage:
     - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
     - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
+  only:
+    - staging
 
-# test_stage:
-#   image: alpine
-#   stage: automated testing
-#   script:
+test_stage:
+  image: google/cloud-sdk
+  stage: deploy staging
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+   - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello World!"
+
+deploy_production:
+  image: google/cloud-sdk
+  stage: deploy production
+  before_script:
+   - echo "$PROD_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_PROD
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_PROD
+   - gcloud config set compute/zone us-central1-a
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD
+    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - sed -i "s/<ENVIRONMENT>/${PROD_NAMESPACE}/g" deployment.yaml
+    - kubectl apply -f deployment.yaml
+  only:
+    - main

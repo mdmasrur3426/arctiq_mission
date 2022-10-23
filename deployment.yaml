@@ -36,8 +36,9 @@ metadata:
   labels:
     app: python-flask
 spec:
-  ports:
-    - port: 8080
-      targetPort: 8080
+  type: LoadBalancer
   selector:
     app: python-flask
+  ports:
+  - port: 80
+    targetPort: 8080

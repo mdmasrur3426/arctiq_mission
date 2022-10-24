@@ -1,6 +1,8 @@
 stages:
   - test
   - build
+  - deploy feature
+  - automated feature testing
   - deploy staging
   - automated testing
   - deploy production
@@ -11,6 +13,7 @@ variables:
   GCP_PROJECT_NAME_PROD: arctiq-mission-prod-3368
   PROD_NAMESPACE: arctiq-mission-prod
   STAGING_NAMESPACE: arctiq-mission-staging
+  FEATURE_NAMESPACE: arctiq-mission-feature
   REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
   IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_SHORT_SHA
   GKE_CLUSTER_NAME_STAGING: staging
@@ -56,6 +59,61 @@ build:
     - docker images
     - docker push $IMAGE_TAG
 
+deploy_feature:
+  image: google/cloud-sdk:latest
+  stage: deploy feature
+  environment:
+    name: feature/$CI_COMMIT_REF_NAME
+    on_stop: stop_feature
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+   - apt install curl
+   - ./get_helm.sh
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
+    - helm install python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
+  only:
+    - /^feature-.*$/
+
+stop_feature:
+  image: google/cloud-sdk
+  stage: deploy feature
+  environment:
+    name: feature/$CI_COMMIT_REF_NAME
+    action: stop
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+  script:
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
+    - helm uninstall python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
+  when: manual
+
+test_feature:
+  image: google/cloud-sdk
+  stage: automated feature testing
+  before_script:
+   - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
+   - gcloud auth activate-service-account --key-file=key.json
+   - gcloud config set project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
+   - gcloud config set compute/zone us-central1-a
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+  script:
+   - kubectl get svc -n $FEATURE_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
+  only:
+    - /^feature-.*$/
+
 deploy_stage:
   image: google/cloud-sdk:latest
   stage: deploy staging
@@ -73,6 +131,8 @@ deploy_stage:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
     - helm upgrade python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
+  only:
+    - main
 
 test_stage:
   image: google/cloud-sdk
@@ -85,7 +145,7 @@ test_stage:
    - gcloud config set compute/zone us-central1-a
    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
   script:
-   - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
+   - kubectl get svc -n $STAGING_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
   only:
     - main
 
@@ -109,3 +169,5 @@ deploy_production:
   only:
     - main
   when: manual
+
+# End of File

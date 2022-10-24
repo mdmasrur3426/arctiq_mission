@@ -57,7 +57,7 @@ build:
     - docker push $IMAGE_TAG
 
 deploy_stage:
-  image: google/cloud-sdk
+  image: google/cloud-sdk:latest
   stage: deploy staging
   environment:
     name: staging
@@ -67,11 +67,12 @@ deploy_stage:
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
    - gcloud config set compute/zone us-central1-a
+   - apt install curl
+   - ./get_helm.sh
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
-    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
-    - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
-    - kubectl apply -f deployment.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
+    - helm install python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
 
 test_stage:
   image: google/cloud-sdk
@@ -97,10 +98,11 @@ deploy_production:
    - gcloud config set project $GCP_PROJECT_NAME_PROD
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_PROD
    - gcloud config set compute/zone us-central1-a
+   - apt install curl
+   - ./get_helm.sh
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD
-    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
-    - sed -i "s/<ENVIRONMENT>/${PROD_NAMESPACE}/g" deployment.yaml
-    - kubectl apply -f deployment.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
+    - helm install python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
   only:
     - main

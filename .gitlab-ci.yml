@@ -60,7 +60,7 @@ build:
 .job_template: &template
   image: google/cloud-sdk
   before_script:
-   - echo "SERVICE_ACCOUNT_KEY" > key.json
+   - echo "$SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME
    - gcloud config set container/cluster $GKE_CLUSTER_NAME
@@ -102,7 +102,7 @@ deploy_production:
     SERVICE_ACCOUNT_KEY: $PROD_SERVICE_ACCOUNT_KEY
     GCP_PROJECT_NAME: $GCP_PROJECT_NAME_PROD
     GKE_CLUSTER_NAME: $GKE_CLUSTER_NAME_PROD
-    NAMESPACE: $STAGING_PROD
+    NAMESPACE: $PROD_NAMESPACE
     name: production
   only:
     - main

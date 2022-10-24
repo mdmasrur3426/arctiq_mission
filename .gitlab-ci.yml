@@ -12,7 +12,7 @@ variables:
   PROD_NAMESPACE: arctiq-mission-prod
   STAGING_NAMESPACE: arctiq-mission-staging
   REGISTRY_HOSTNAME: gcr.io/$GCP_PROJECT_NAME
-  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_REF_SLUG
+  IMAGE_TAG: $REGISTRY_HOSTNAME/$CI_PROJECT_NAME/arctiq-image:$CI_COMMIT_SHORT_SHA
   GKE_CLUSTER_NAME_STAGING: staging
   GKE_CLUSTER_NAME_PROD: production
 
@@ -60,6 +60,8 @@ build:
 deploy_stage:
   image: google/cloud-sdk
   stage: deploy staging
+  environment:
+    name: staging
   before_script:
    - echo "$STAGING_SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json
@@ -68,7 +70,7 @@ deploy_stage:
    - gcloud config set compute/zone us-central1-a
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
-    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
     - sed -i "s/<ENVIRONMENT>/${STAGING_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
 
@@ -88,6 +90,8 @@ test_stage:
 deploy_production:
   image: google/cloud-sdk
   stage: deploy production
+  environment:
+    name: production
   before_script:
    - echo "$PROD_SERVICE_ACCOUNT_KEY" > key.json
    - gcloud auth activate-service-account --key-file=key.json
@@ -96,7 +100,7 @@ deploy_production:
    - gcloud config set compute/zone us-central1-a
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD
-    - sed -i "s/<VERSION>/${CI_COMMIT_REF_SLUG}/g" deployment.yaml
+    - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" deployment.yaml
     - sed -i "s/<ENVIRONMENT>/${PROD_NAMESPACE}/g" deployment.yaml
     - kubectl apply -f deployment.yaml
   only:

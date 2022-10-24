@@ -13,3 +13,4 @@ deployment.yaml
 __pycache__
 python-deployment
 python-deployment/*
+get_helm.sh

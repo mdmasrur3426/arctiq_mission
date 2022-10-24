@@ -68,8 +68,6 @@ deploy_stage:
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
    - gcloud config set compute/zone us-central1-a
    - apt install curl
-   - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-   - chmod 700 get_helm.sh
    - ./get_helm.sh
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
@@ -100,9 +98,7 @@ deploy_production:
    - gcloud config set project $GCP_PROJECT_NAME_PROD
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_PROD
    - gcloud config set compute/zone us-central1-a
-   - apk --no-cache add curl
-   - curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-   - chmod 700 get_helm.sh
+   - apt install curl
    - ./get_helm.sh
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD

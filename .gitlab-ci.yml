@@ -16,7 +16,6 @@ variables:
   GKE_CLUSTER_NAME_STAGING: staging
   GKE_CLUSTER_NAME_PROD: production
 
-
 lint_test:
   image: python:3.8.0-slim
   stage: test

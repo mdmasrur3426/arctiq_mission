@@ -76,7 +76,7 @@ deploy_feature:
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm upgrade python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
+    - helm install python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
   only:
     - /^feature-.*$/
 
@@ -97,7 +97,7 @@ stop_feature:
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm uninstall python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
+    - helm uninstall python-flask -n $FEATURE_NAMESPACE
   when: manual
 
 test_feature:

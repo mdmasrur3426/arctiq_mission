@@ -111,7 +111,7 @@ test_feature:
    - gcloud config set compute/zone us-central1-a
    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
   script:
-   - kubectl get svc -n $FEATURE_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
+   - kubectl get svc -n $FEATURE_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
   only:
     - /^feature-.*$/
 
@@ -146,7 +146,7 @@ test_stage:
    - gcloud config set compute/zone us-central1-a
    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
   script:
-   - kubectl get svc -n $STAGING_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
+   - kubectl get svc -n $STAGING_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
   only:
     - main
 

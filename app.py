@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    target = os.environ.get('TARGET', 'Arctiq Team')
+    target = os.environ.get('TARGET', 'Arctiq')
     return 'Hello {}!\n'.format(target)
 
 

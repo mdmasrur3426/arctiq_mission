@@ -1,14 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "python-deployment.fullname" . }}-python-flask-service
+  name: python-flask-service
   labels:
     app: python-flask
-  {{- include "python-deployment.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.pythonFlaskService.type }}
+  type: LoadBalancer
   selector:
     app: python-flask
-  {{- include "python-deployment.selectorLabels" . | nindent 4 }}
   ports:
-	{{- .Values.pythonFlaskService.ports | toYaml | nindent 2 -}}
+    - port: 80
+      targetPort: 8080

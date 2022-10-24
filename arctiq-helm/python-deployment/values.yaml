@@ -5,8 +5,3 @@ arctiqMissionApp:
       tag: <VERSION>
   replicas: 2
 kubernetesClusterDomain: cluster.local
-pythonFlaskService:
-  ports:
-  - port: 80
-    targetPort: 8080
-  type: LoadBalancer

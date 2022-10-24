@@ -74,7 +74,7 @@ deploy_stage:
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
     - helm install python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
   only:
-    - main
+    - staging
 
 test_stage:
   image: google/cloud-sdk
@@ -88,6 +88,8 @@ test_stage:
    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
   script:
    - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
+  only:
+    - staging
 
 deploy_production:
   image: google/cloud-sdk

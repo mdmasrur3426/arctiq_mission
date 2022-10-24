@@ -11,3 +11,5 @@ deployment.yaml
 *.pyo
 *.pyd
 __pycache__
+python-deployment
+python-deployment/*

@@ -6,4 +6,4 @@ def test_app():
 
     rv = web.get('/')
     assert rv.status == '200 OK'
-    assert rv.data == b'Hello Arctiq!\n'
+    assert rv.data == b'Hello Arctiq Team!\n'

@@ -85,7 +85,7 @@ test_stage:
    - gcloud config set compute/zone us-central1-a
    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
   script:
-   - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
+   - kubectl get svc -n arctiq-mission-staging| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq Team!"
   only:
     - main
 
@@ -108,3 +108,4 @@ deploy_production:
     - helm upgrade python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
   only:
     - main
+  when: manual

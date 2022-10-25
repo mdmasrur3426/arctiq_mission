@@ -342,3 +342,30 @@ deploy_production:
     - main
   when: manual
 ```
+###### HELM Packaging
+
+Helm charts is used to create the k8s template for the application and install the application on the GKE cluster.
+
+```
+helm install python-flask -n $GKE_NAMESPACE arctiq-helm/python-deployment
+```
+
+###### Checking  the application
+
+To check the application that are running in GKE cluster. Use following command:
+
+```
+kubectl get pods -n GKE_APPLICATION_NAMESPACE
+```
+
+You can also use curl to get the content of the application running on the pod
+
+```
+curl http://EXTERNAL_IP
+```
+
+EXTERNAL_IP can be found from the application service
+
+```
+kubectl get svc -n GKE_APPLICATION_NAMESPACE
+```

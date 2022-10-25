@@ -70,11 +70,11 @@ deploy_feature:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
-   - gcloud config set compute/zone us-central1-a
+   - gcloud config set compute/region us-central1
    - apt install curl
    - ./get_helm.sh
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
     - helm install python-flask -n $FEATURE_NAMESPACE arctiq-helm/python-deployment
   only:
@@ -91,11 +91,11 @@ stop_feature:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
-   - gcloud config set compute/zone us-central1-a
+   - gcloud config set compute/region us-central1
    - apt install curl
    - ./get_helm.sh
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
     - helm uninstall python-flask -n $FEATURE_NAMESPACE
   when: manual
@@ -108,8 +108,8 @@ test_feature:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
-   - gcloud config set compute/zone us-central1-a
-   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set compute/region us-central1
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
   script:
    - kubectl get svc -n $FEATURE_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
   only:
@@ -125,13 +125,13 @@ deploy_stage:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
-   - gcloud config set compute/zone us-central1-a
+   - gcloud config set compute/region us-central1
    - apt install curl
    - ./get_helm.sh
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm upgrade python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
+    - helm install python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
   only:
     - main
 
@@ -143,8 +143,8 @@ test_stage:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_STAGING
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_STAGING
-   - gcloud config set compute/zone us-central1-a
-   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --zone us-central1-a --project $GCP_PROJECT_NAME_STAGING
+   - gcloud config set compute/region us-central1
+   - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
   script:
    - kubectl get svc -n $STAGING_NAMESPACE| awk '{print $4}' | grep -v "EXTERNAL-IP"| while read line; do curl "http://$line"; done | grep "Hello Arctiq!"
   only:
@@ -160,13 +160,13 @@ deploy_production:
    - gcloud auth activate-service-account --key-file=key.json
    - gcloud config set project $GCP_PROJECT_NAME_PROD
    - gcloud config set container/cluster $GKE_CLUSTER_NAME_PROD
-   - gcloud config set compute/zone us-central1-a
+   - gcloud config set compute/region us-central1
    - apt install curl
    - ./get_helm.sh
   script:
-    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --zone us-central1-a --project $GCP_PROJECT_NAME_PROD
+    - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --region us-central1 --project $GCP_PROJECT_NAME_PROD
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm upgrade python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
+    - helm install python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
   only:
     - main
   when: manual

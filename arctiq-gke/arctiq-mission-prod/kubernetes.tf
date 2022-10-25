@@ -1,8 +1,8 @@
 resource "google_container_cluster" "production" {
   name                     = "production"
-  location                 = "us-central1-a"
+  location                 = "us-central1"
   remove_default_node_pool = true
-  initial_node_count        =   1
+  initial_node_count       =   1
   network                  = google_compute_network.main.self_link
   subnetwork               = google_compute_subnetwork.private.self_link
   logging_service          = "logging.googleapis.com/kubernetes"
@@ -10,6 +10,7 @@ resource "google_container_cluster" "production" {
   networking_mode          = "VPC_NATIVE" 
 
   node_locations = [
+    "us-central1-a",
     "us-central1-b"
   ]
 

@@ -131,7 +131,7 @@ deploy_stage:
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_STAGING --region us-central1 --project $GCP_PROJECT_NAME_STAGING
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm install python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
+    - helm upgrade python-flask -n $STAGING_NAMESPACE arctiq-helm/python-deployment
   only:
     - main
 
@@ -166,7 +166,7 @@ deploy_production:
   script:
     - gcloud container clusters get-credentials $GKE_CLUSTER_NAME_PROD --region us-central1 --project $GCP_PROJECT_NAME_PROD
     - sed -i "s/<VERSION>/${CI_COMMIT_SHORT_SHA}/g" arctiq-helm/python-deployment/values.yaml
-    - helm install python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
+    - helm upgrade python-flask -n $PROD_NAMESPACE arctiq-helm/python-deployment    
   only:
     - main
   when: manual
